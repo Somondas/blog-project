@@ -1,7 +1,7 @@
 import { dummyPosts } from "@/constants/dummyData";
 import Image from "next/image";
 import React from "react";
-
+// |------------------------------------------------------------------------
 const BlogPage = () => {
   const post = dummyPosts[0];
 
@@ -44,9 +44,9 @@ const BlogPage = () => {
           sit amet consectetur adipisicing elit. Deserunt, quidem.
         </p>
         <p>
-          Praesentium fugiat ratione, commodi id vero distinctio ab dolores
-          ducimus aut aliquid voluptatum recusandae doloribus, necessitatibus
-          tenetur. Natus, hic. Autem, soluta.
+          export default BlogPage; Praesentium fugiat ratione, commodi id vero
+          distinctio ab dolores ducimus aut aliquid voluptatum recusandae
+          doloribus, necessitatibus tenetur. Natus, hic. Autem, soluta.
         </p>
         <p>
           Thank you for reading. We hope this blog helped you understand modern
