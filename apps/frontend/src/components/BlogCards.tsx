@@ -1,20 +1,37 @@
 import Link from "next/link";
+import { BlogPostProp } from "@/app/blog/page";
 
-const BlogCard = ({ title, excerpt, slug }: any) => {
+const BlogCard = ({ title, excerpt, slug, coverImage }: BlogPostProp) => {
   return (
-    <div className="relative flex flex-col my-6 md:mx-4 mx-auto bg-white shadow-sm border border-slate-200 rounded-lg w-11/12 md:w-4/12 md:h-auto">
-      <div className="p-4">
-        <h5 className="mb-2 text-slate-800 text-xl font-semibold">{title}</h5>
-        <p className="text-slate-600 leading-normal font-light">{excerpt}</p>
+    <div className="flex flex-col bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 w-full max-w-sm mx-auto">
+      {/* Image section - fixed height, cropped */}
+      <div className="w-full h-48 overflow-hidden">
+        <img
+          src={coverImage.url}
+          alt={coverImage.alt}
+          className="w-full h-full object-cover"
+        />
+      </div>
 
-        <Link href={`/blog/${slug}`}>
-          <button
-            className="rounded-md bg-blue-800 py-2 px-4 mt-6 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-blue-700 focus:shadow-none active:bg-blue-700 hover:bg-blue-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-            type="button"
-          >
-            Read more
-          </button>
-        </Link>
+      {/* Content section */}
+      <div className="flex flex-col justify-between flex-1 p-4">
+        <div>
+          <h5 className="text-lg font-semibold text-slate-800 mb-2 line-clamp-2">
+            {title}
+          </h5>
+          <p className="text-slate-600 text-sm line-clamp-3">{excerpt}</p>
+        </div>
+
+        <div className="mt-4">
+          <Link href={`/blog/${slug}`}>
+            <button
+              className="w-full rounded-md bg-blue-800 py-2 px-4 text-center text-sm text-white transition-all hover:bg-blue-700"
+              type="button"
+            >
+              Read more
+            </button>
+          </Link>
+        </div>
       </div>
     </div>
   );
