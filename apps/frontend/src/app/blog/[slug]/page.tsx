@@ -23,7 +23,7 @@ export type BlogPost = {
 export async function getPost(slug: string): Promise<BlogPost | null> {
   try {
     const res = await fetch(
-      `http://localhost:3001/api/posts?where[slug][equals]=${slug}&where[published][equals]=true`
+      `${process.env.NEXT_PUBLIC_API_URL}/api/posts?where[slug][equals]=${slug}&where[published][equals]=true`
     );
 
     if (!res.ok) throw new Error("Failed to fetch post");
@@ -45,7 +45,7 @@ const BlogPage = async ({ params }: Props) => {
   const coverImage: { url: string; alt: string } = {
     url:
       post?.coverImage?.url && post.coverImage.url.startsWith("/api")
-        ? `http://localhost:3001${post.coverImage.url}`
+        ? `${process.env.NEXT_PUBLIC_API_URL}/${post.coverImage.url}`
         : post?.coverImage?.url ?? "/fallback.jpg",
 
     alt: post?.coverImage?.alt ?? post?.title,
