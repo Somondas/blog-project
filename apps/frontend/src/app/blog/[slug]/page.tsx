@@ -1,18 +1,67 @@
 import { dummyPosts } from "@/constants/dummyData";
 import React from "react";
 import { renderRichText } from "@/lib/renderRichText"; // 👈 use your actual path
+import { BlogPostProp } from "../page";
+import { log } from "console";
+// |--------------------------------------------------------
 
-const BlogPage = () => {
-  const post = dummyPosts[0];
+type Props = {
+  params: {
+    slug: string;
+  };
+};
+// -> BlogPost type-----
+export type BlogPost = {
+  title: string;
+  slug: string;
+  excerpt?: string;
+  coverImage?: string;
+  content: any[];
+};
+
+// >> getPost Function --------------------------
+export async function getPost(slug: string): Promise<BlogPost | null> {
+  try {
+    const res = await fetch(
+      `http://localhost:3001/api/posts?where[slug][equals]=${slug}&where[published][equals]=true`
+    );
+
+    if (!res.ok) throw new Error("Failed to fetch post");
+
+    const data = await res.json();
+
+    return data.docs?.[0] || null;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+const BlogPage = async ({ params }: Props) => {
+  const post = await getPost(params.slug);
   const author = process.env.NEXT_PUBLIC_BLOG_AUTHOR || "Unknown Author";
+
+  // ! I have to stop typescript complaining about this function later
+  const coverImage: { url: string; alt: string } = {
+    url:
+      post?.coverImage?.url && post.coverImage.url.startsWith("/api")
+        ? `http://localhost:3001${post.coverImage.url}`
+        : post?.coverImage?.url ?? "/fallback.jpg",
+
+    alt: post?.coverImage?.alt ?? post?.title,
+  };
+
+  // TODO: Fix this... this look awfull...
+  if (!post) return <div className="text-center py-20">Post not found</div>;
+  console.log(coverImage);
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-12">
-      {/* Banner */}
+      {/* coverImage */}
       <div className="relative w-full h-[250px] md:h-[400px] mb-10 rounded-lg overflow-hidden">
         <img
-          src={post.banner || "https://via.placeholder.com/800x400"}
-          alt="Blog banner"
+          src={coverImage.url || "https://via.placeholder.com/800x400"}
+          alt="Blog coverImage"
           className="object-cover object-center w-full h-full"
         />
       </div>
@@ -34,7 +83,7 @@ const BlogPage = () => {
 
       {/* Rendered Rich Text Content */}
       <div className="prose prose-lg max-w-none text-gray-800 leading-relaxed space-y-6">
-        {renderRichText(post.content)}
+        {renderRichText(post.content?.root?.children || [])}
       </div>
     </div>
   );
