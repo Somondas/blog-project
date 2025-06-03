@@ -26,13 +26,14 @@ const getPosts = async (
   page: number = 1,
   category: string = "all"
 ): Promise<{ posts: BlogPostProp[]; totalPages: number }> => {
-  let url = `http://localhost:3001/api/posts?where[published][equals]=true&limit=6&page=${page}`;
+  const apiURL = process.env.NEXT_PUBLIC_API_URL;
+  let url = `${apiURL}/api/posts?where[published][equals]=true&limit=6&page=${page}`;
+  console.log(url);
   if (category !== "all") {
     url += `&where[category][equals]=${category}`;
   }
   const res = await fetch(url, { cache: "no-cache" });
 
-  // TODO: (IMP) Add a beatiful dialog box
   if (!res.ok) throw new Error("Something went wrong");
 
   const data = await res.json();
@@ -44,7 +45,7 @@ const getPosts = async (
     category: post.category,
     coverImage: {
       url: post.coverImage?.url.startsWith("/api")
-        ? `http://localhost:3001${post.coverImage.url}`
+        ? `${apiURL}/${post.coverImage.url}`
         : post.coverImage.url,
       alt: post.coverImage?.alt || post.title,
     },
@@ -67,7 +68,6 @@ const Blog = async ({ searchParams }: Props) => {
     const response = await getPosts(currentPage, currentCategory);
     posts = response.posts;
     totalPages = response.totalPages;
-    console.log(posts);
   } catch (err) {
     error = err instanceof Error ? err.message : "Failed to fetch blog posts";
   }
