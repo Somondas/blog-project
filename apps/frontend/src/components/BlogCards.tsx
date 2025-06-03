@@ -1,9 +1,18 @@
 import Link from "next/link";
 import { BlogPostProp } from "@/app/blog/page";
 
-const BlogCard = ({ title, excerpt, slug, coverImage }: BlogPostProp) => {
+const BlogCard = ({
+  title,
+  excerpt,
+  slug,
+  coverImage,
+  category,
+}: BlogPostProp) => {
   return (
-    <div className="flex flex-col bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 w-full max-w-sm mx-auto">
+    <div className="flex flex-col relative bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 w-full max-w-sm mx-auto">
+      <span className=" text-gray-200 absolute top-2 capitalize right-2 bg-[rgba(55,55,186,0.7)] rounded-md px-3 py-1">
+        {category}
+      </span>
       {/* Image section - fixed height, cropped */}
       <div className="w-full h-48 overflow-hidden">
         <img

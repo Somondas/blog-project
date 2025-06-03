@@ -1,11 +1,7 @@
 import BlogCards from "@/components/BlogCards";
 import BlogPagination from "@/components/BlogPagination";
+import BlogCategoryTabs from "@/components/BlogTabs";
 import ErrorDialog from "@/components/ErrorDialog";
-import { dummyPosts } from "@/constants/dummyData";
-import { Pagination, PaginationItem } from "@mui/material";
-import Link from "next/link";
-import React from "react";
-import Swal from "sweetalert2";
 // | --------------------------------------------------------------------
 
 // -> Types ---------------
@@ -14,6 +10,7 @@ export interface BlogPostProp {
   title: string;
   excerpt: string;
   slug: string;
+  category: string;
   coverImage: {
     url: string;
     alt: string;
@@ -26,12 +23,14 @@ type Props = {
 };
 // >> getPost Function-------------
 const getPosts = async (
-  page: number = 1
+  page: number = 1,
+  category: string = "all"
 ): Promise<{ posts: BlogPostProp[]; totalPages: number }> => {
-  const res = await fetch(
-    `http://localhost:3001/api/posts?where[published][equals]=true&limit=6&page=${page}`,
-    { cache: "no-cache" }
-  );
+  let url = `http://localhost:3001/api/posts?where[published][equals]=true&limit=6&page=${page}`;
+  if (category !== "all") {
+    url += `&where[category][equals]=${category}`;
+  }
+  const res = await fetch(url, { cache: "no-cache" });
 
   // TODO: (IMP) Add a beatiful dialog box
   if (!res.ok) throw new Error("Something went wrong");
@@ -42,6 +41,7 @@ const getPosts = async (
     title: post.title,
     excerpt: post.excerpt,
     slug: post.slug,
+    category: post.category,
     coverImage: {
       url: post.coverImage?.url.startsWith("/api")
         ? `http://localhost:3001${post.coverImage.url}`
@@ -58,13 +58,16 @@ const getPosts = async (
 
 const Blog = async ({ searchParams }: Props) => {
   const currentPage = Number(searchParams.page) || 1;
+  const currentCategory = searchParams.category || "all";
+
   let posts: BlogPostProp[] = [];
   let totalPages = 1;
   let error: string | null = null;
   try {
-    const response = await getPosts(currentPage);
+    const response = await getPosts(currentPage, currentCategory);
     posts = response.posts;
     totalPages = response.totalPages;
+    console.log(posts);
   } catch (err) {
     error = err instanceof Error ? err.message : "Failed to fetch blog posts";
   }
@@ -79,11 +82,13 @@ const Blog = async ({ searchParams }: Props) => {
   return (
     <div className="bg-slate-50">
       {/* Navbar */}
-      <nav className="w-full h-auto  bg-sky-500 ">
+      <nav className="w-full h-auto  bg-sky-500  shadow-lg">
         <h1 className="text-5xl py-4 pl-4 font-extrabold text-gray-50">
           blogs
         </h1>
       </nav>
+      {/* Tabs */}
+      <BlogCategoryTabs />
       {/* Blog Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
         {/* cards */}
@@ -100,4 +105,6 @@ const Blog = async ({ searchParams }: Props) => {
   );
 };
 // TODO: (IMP) It is working on your machine, fix the .env file, replace the static strings with them....
+
+// TODO: Add a preloader as well
 export default Blog;

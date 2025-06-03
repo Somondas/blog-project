@@ -25,6 +25,25 @@ export const Posts: CollectionConfig = {
       type: 'textarea',
     },
     {
+      name: 'category',
+      type: 'select',
+      required: true,
+      options: [
+        {
+          label: 'Frontend',
+          value: 'frontend',
+        },
+        {
+          label: 'Backend',
+          value: 'backend',
+        },
+        {
+          label: 'Fullstack',
+          value: 'fullstack',
+        },
+      ],
+    },
+    {
       name: 'content',
       type: 'richText',
       required: true,

@@ -160,6 +160,7 @@ export interface Post {
   title: string;
   slug: string;
   excerpt?: string | null;
+  category: 'frontend' | 'backend' | 'fullstack';
   content: {
     root: {
       type: string;
@@ -282,6 +283,7 @@ export interface PostsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   excerpt?: T;
+  category?: T;
   content?: T;
   coverImage?: T;
   published?: T;
