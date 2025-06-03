@@ -28,7 +28,6 @@ const getPosts = async (
 ): Promise<{ posts: BlogPostProp[]; totalPages: number }> => {
   const apiURL = process.env.NEXT_PUBLIC_API_URL;
   let url = `${apiURL}/api/posts?where[published][equals]=true&limit=6&page=${page}`;
-  console.log(url);
   if (category !== "all") {
     url += `&where[category][equals]=${category}`;
   }

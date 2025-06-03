@@ -1,8 +1,4 @@
-import { dummyPosts } from "@/constants/dummyData";
-import React from "react";
 import { renderRichText } from "@/lib/renderRichText"; // 👈 use your actual path
-import { BlogPostProp } from "../page";
-import { log } from "console";
 // |--------------------------------------------------------
 
 type Props = {
@@ -53,7 +49,6 @@ const BlogPage = async ({ params }: Props) => {
 
   // TODO: Fix this... this look awfull...
   if (!post) return <div className="text-center py-20">Post not found</div>;
-  console.log(coverImage);
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-12">
