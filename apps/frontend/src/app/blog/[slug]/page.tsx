@@ -59,9 +59,6 @@ const BlogPage = async ({ params }: Props) => {
     day: "numeric",
   });
 
-  console.log(formattedDate); // "June 2, 2025"
-  console.log(post.createdAt); // "June 2, 2025"
-
   // TODO: Fix this... this look awfull...
   if (!post) return <div className="text-center py-20">Post not found</div>;
 
