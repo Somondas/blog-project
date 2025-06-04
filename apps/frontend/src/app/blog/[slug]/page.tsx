@@ -1,4 +1,5 @@
 import { renderRichText } from "@/lib/renderRichText"; // 👈 use your actual path
+import { format, utcToZonedTime } from "date-fns";
 // |--------------------------------------------------------
 
 type Props = {
@@ -13,6 +14,7 @@ export type BlogPost = {
   excerpt?: string;
   coverImage?: string;
   content: any[];
+  createdAt: string;
 };
 
 // >> getPost Function --------------------------
@@ -25,7 +27,7 @@ export async function getPost(slug: string): Promise<BlogPost | null> {
     if (!res.ok) throw new Error("Failed to fetch post");
 
     const data = await res.json();
-
+    console.log(data);
     return data.docs?.[0] || null;
   } catch (error) {
     console.error(error);
@@ -46,6 +48,20 @@ const BlogPage = async ({ params }: Props) => {
 
     alt: post?.coverImage?.alt ?? post?.title,
   };
+
+  // >> Date formater
+
+  const date = new Date(post?.createdAt);
+
+  const formattedDate = date.toLocaleDateString("en-US", {
+    timeZone: "Asia/Kolkata",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  console.log(formattedDate); // "June 2, 2025"
+  console.log(post.createdAt); // "June 2, 2025"
 
   // TODO: Fix this... this look awfull...
   if (!post) return <div className="text-center py-20">Post not found</div>;
@@ -68,7 +84,8 @@ const BlogPage = async ({ params }: Props) => {
 
       {/* Meta Info */}
       <p className="text-sm text-center text-gray-500 mb-8">
-        By <span className="font-semibold">{author}</span> · June 2, 2025
+        By <span className="font-semibold">{author}</span> ·{" "}
+        <span>{formattedDate}</span>
       </p>
 
       {/* Excerpt */}
